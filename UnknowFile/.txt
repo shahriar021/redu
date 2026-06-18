@@ -1,0 +1,20 @@
+Google Play Console.
+Gmail:- mark@jobsitex.co
+Password:- Jobsitex@2728
+
+MongoDB User
+User Name:- admin-jobsitex
+Password:- m.r%s8EZJuCU3TG
+
+Stripe API Publishable
+pk_live_51T4SH11oedwMv2459k16BXQeKMfmmyCeAFLlk53citaK7eq2TJp2TfnYyBEJNz6ogDvr5yJemalD8zsuLSJHPAQb00wzdFda4
+
+Google Maps API-
+AIzaSyCB3G-ob1C6JEUF_wotuQY1RMPKIbRkPIw
+
+Apple Developer
+User Name:- Mark@jobsitex.co
+Password:- Jobsitex@2728
+
+IP_FIND 
+e08f5760-63df-41a5-8915-ad7456651407

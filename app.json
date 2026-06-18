@@ -1,0 +1,118 @@
+{
+  "expo": {
+    "name": "JOBSITEX",
+    "slug": "JOBSITEX",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.AhmedReFu.JOBSITEX",
+      "config": {
+        "googleMapsApiKey": "AIzaSyCB3G-ob1C6JEUF_wotuQY1RMPKIbRkPIw"
+      },
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We need your location to find nearby jobs and drivers.",
+        "NSLocationAlwaysUsageDescription": "We need your location to track delivery routes and job locations.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "We need your location to provide job recommendations and track deliveries.",
+        "NSCameraUsageDescription": "We need camera access to take photos for profile and job documentation.",
+        "NSPhotoLibraryUsageDescription": "We need photo library access to upload images for your profile.",
+        "NSPhotoLibraryAddUsageDescription": "We need permission to save photos to your library.",
+        "NSCalendarsUsageDescription": "We need calendar access to schedule jobs.",
+        "NSRemindersUsageDescription": "We need reminders access to set job notifications.",
+        "NSMotionUsageDescription": "We use motion data to track your activity during deliveries.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.AhmedReFu.JOBSITEX",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCB3G-ob1C6JEUF_wotuQY1RMPKIbRkPIw"
+        }
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_LOCATION",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "scheme": "jobsitex",
+    "plugins": [
+      "./plugins/withGoogleServicesJson",
+      [
+        "react-native-maps",
+        {
+          "iosGoogleMapsApiKey": "AIzaSyCB3G-ob1C6JEUF_wotuQY1RMPKIbRkPIw"
+        }
+      ],
+      "expo-apple-authentication",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.335149546838-k4i1locg3rro8nbtrmlgl5h6ribsb66s"
+        }
+      ],
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow JOBSITEX to use your location for job recommendations and delivery tracking.",
+          "locationAlwaysPermission": "Allow JOBSITEX to use your location even when the app is in the background.",
+          "locationWhenInUsePermission": "Allow JOBSITEX to use your location while you are using the app.",
+          "isIosBackgroundLocationEnabled": true,
+          "isAndroidBackgroundLocationEnabled": true,
+          "isAndroidForegroundServiceEnabled": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app needs access to your photos to upload profile pictures and job images.",
+          "cameraPermission": "The app needs access to your camera to take photos for profiles and jobs."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/location-icon.png",
+          "color": "#4CAF50"
+        }
+      ],
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.co.jobsitex",
+          "enableGooglePay": false
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "d9e06a04-deaf-4074-acb5-47a3f065ca3f"
+      }
+    },
+    "owner": "jobsitex"
+  }
+}

@@ -1,0 +1,989 @@
+{
+  "info": {
+    "name": "JobsiteX Backend",
+    "_postman_id": "jobsitex-backend-collection",
+    "description": "Complete API collection for JobsiteX trucking platform backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://api.jobsitex.co/api/v1", "type": "string" },
+    { "key": "socketUrl", "value": "https://api.jobsitex.co", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" },
+    { "key": "refreshToken", "value": "", "type": "string" },
+    { "key": "otp", "value": "", "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Signup",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data?.otp) pm.collectionVariables.set('otp', res.data.otp);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"mobileNumber\": \"+11234567890\",\n  \"password\": \"Password1\",\n  \"role\": \"CUSTOMER\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/signup", "host": ["{{baseUrl}}"], "path": ["auth", "signup"] }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data?.accessToken) {",
+                  "  pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "  pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"code\": \"{{otp}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/verify-otp", "host": ["{{baseUrl}}"], "path": ["auth", "verify-otp"] }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data?.accessToken) {",
+                  "  pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "  pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"Password1\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Google OAuth (Web) - Redirect",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/auth/google", "host": ["{{baseUrl}}"], "path": ["auth", "google"] },
+            "description": "Opens browser Google OAuth flow — visit this URL in a browser, not Postman"
+          }
+        },
+        {
+          "name": "Google OAuth (Web) - Callback",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/auth/google/callback?code=<google-auth-code>",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "google", "callback"],
+              "query": [{ "key": "code", "value": "<google-auth-code>" }]
+            },
+            "description": "Handled automatically by Google redirect — not called directly"
+          }
+        },
+        {
+          "name": "Google Mobile Auth",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data?.accessToken) {",
+                  "  pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "  pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idToken\": \"<google-id-token>\",\n  \"role\": \"CUSTOMER\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/google/mobile", "host": ["{{baseUrl}}"], "path": ["auth", "google", "mobile"] }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data?.otp) pm.collectionVariables.set('otp', res.data.otp);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/forgot-password", "host": ["{{baseUrl}}"], "path": ["auth", "forgot-password"] }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"code\": \"123456\",\n  \"newPassword\": \"NewPassword1\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/reset-password", "host": ["{{baseUrl}}"], "path": ["auth", "reset-password"] }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data?.accessToken) {",
+                  "  pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "  pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/refresh", "host": ["{{baseUrl}}"], "path": ["auth", "refresh"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/user/profile", "host": ["{{baseUrl}}"], "path": ["user", "profile"] }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "fullName", "value": "Jane Doe", "type": "text" },
+                { "key": "mobileNumber", "value": "+11234567890", "type": "text" },
+                { "key": "avatar", "type": "file", "src": "" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/user/profile", "host": ["{{baseUrl}}"], "path": ["user", "profile"] }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Password1\",\n  \"newPassword\": \"NewPassword1\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/user/change-password", "host": ["{{baseUrl}}"], "path": ["user", "change-password"] }
+          }
+        },
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/user/notifications?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "notifications"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark Notification Read",
+          "request": {
+            "method": "PATCH",
+            "url": { "raw": "{{baseUrl}}/user/notifications/:id/read", "host": ["{{baseUrl}}"], "path": ["user", "notifications", ":id", "read"], "variable": [{ "key": "id", "value": "<notification-id>" }] }
+          }
+        },
+        {
+          "name": "Mark All Notifications Read",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/user/notifications/read-all", "host": ["{{baseUrl}}"], "path": ["user", "notifications", "read-all"] }
+          }
+        },
+        {
+          "name": "Update FCM Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fcmToken\": \"ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/user/fcm-token", "host": ["{{baseUrl}}"], "path": ["user", "fcm-token"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Driver",
+      "item": [
+        {
+          "name": "Get Driver Profile",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/driver/profile", "host": ["{{baseUrl}}"], "path": ["driver", "profile"] }
+          }
+        },
+        {
+          "name": "Complete Driver Profile",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "truckTypeId", "value": "<truck-type-id>", "type": "text" },
+                { "key": "numberPlate", "value": "ABC-1234", "type": "text" },
+                { "key": "truckModel", "value": "Freightliner Cascadia", "type": "text" },
+                { "key": "truckWeight", "value": "30000", "type": "text" },
+                { "key": "trailerType", "value": "Flatbed", "type": "text" },
+                { "key": "hourlyRate", "value": "75", "type": "text" },
+                { "key": "cdlLicense", "type": "file", "src": "" },
+                { "key": "insurance", "type": "file", "src": "" },
+                { "key": "dotNumber", "type": "file", "src": "" },
+                { "key": "truckPhoto", "type": "file", "src": "" },
+                { "key": "truckPhotoMain", "type": "file", "src": "" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/driver/profile/complete", "host": ["{{baseUrl}}"], "path": ["driver", "profile", "complete"] }
+          }
+        },
+        {
+          "name": "Set Availability",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isAvailable\": true\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/driver/availability", "host": ["{{baseUrl}}"], "path": ["driver", "availability"] }
+          }
+        },
+        {
+          "name": "Update Location",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": 40.7128,\n  \"longitude\": -74.0060\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/driver/location", "host": ["{{baseUrl}}"], "path": ["driver", "location"] }
+          }
+        },
+        {
+          "name": "Get Earnings",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/driver/earnings", "host": ["{{baseUrl}}"], "path": ["driver", "earnings"] }
+          }
+        },
+        {
+          "name": "Stripe — Get Onboarding Link",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/driver/stripe/onboarding-link",
+              "host": ["{{baseUrl}}"],
+              "path": ["driver", "stripe", "onboarding-link"]
+            },
+            "description": "Returns a Stripe Connect onboarding URL. Driver must have completed their profile and been admin-approved."
+          }
+        },
+        {
+          "name": "Stripe — Complete Onboarding (manual fallback)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/driver/stripe/complete-onboarding", "host": ["{{baseUrl}}"], "path": ["driver", "stripe", "complete-onboarding"] },
+            "description": "Manual fallback — normally onboarding status is auto-synced via the account.updated Stripe webhook."
+          }
+        },
+        {
+          "name": "Stripe — Get Status",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/driver/stripe/status", "host": ["{{baseUrl}}"], "path": ["driver", "stripe", "status"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fare",
+      "item": [
+        {
+          "name": "Get Truck Types",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/fare/truck-types", "host": ["{{baseUrl}}"], "path": ["fare", "truck-types"] }
+          }
+        },
+        {
+          "name": "Estimate Fare",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/fare/estimate?truckTypeId=<id>&pickupLat=40.7128&pickupLng=-74.0060&dropoffLat=40.7580&dropoffLng=-73.9855",
+              "host": ["{{baseUrl}}"],
+              "path": ["fare", "estimate"],
+              "query": [
+                { "key": "truckTypeId", "value": "<id>" },
+                { "key": "pickupLat", "value": "40.7128" },
+                { "key": "pickupLng", "value": "-74.0060" },
+                { "key": "dropoffLat", "value": "40.7580" },
+                { "key": "dropoffLng", "value": "-73.9855" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "Create Job (Broadcast)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickupAddress\": \"123 Main St, New York, NY\",\n  \"pickupLat\": 40.7128,\n  \"pickupLng\": -74.0060,\n  \"dropoffAddress\": \"456 Broadway, New York, NY\",\n  \"dropoffLat\": 40.7580,\n  \"dropoffLng\": -73.9855,\n  \"truckTypeId\": \"<truck-type-id>\",\n  \"workNote\": \"Handle with care\",\n  \"scheduledAt\": \"2026-05-01T09:00:00.000Z\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/jobs", "host": ["{{baseUrl}}"], "path": ["jobs"] }
+          }
+        },
+        {
+          "name": "Create Job (Direct to Driver)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickupAddress\": \"123 Main St, New York, NY\",\n  \"pickupLat\": 40.7128,\n  \"pickupLng\": -74.0060,\n  \"dropoffAddress\": \"456 Broadway, New York, NY\",\n  \"dropoffLat\": 40.7580,\n  \"dropoffLng\": -73.9855,\n  \"truckTypeId\": \"<truck-type-id>\",\n  \"targetDriverId\": \"<driver-user-id>\",\n  \"workNote\": \"Handle with care\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/jobs", "host": ["{{baseUrl}}"], "path": ["jobs"] }
+          }
+        },
+        {
+          "name": "Get Home Page Data",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/jobs/home", "host": ["{{baseUrl}}"], "path": ["jobs", "home"] }
+          }
+        },
+        {
+          "name": "Get Nearby Drivers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/jobs/nearby-drivers?truckTypeId=<id>&lat=40.7128&lng=-74.0060&radiusKm=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs", "nearby-drivers"],
+              "query": [
+                { "key": "truckTypeId", "value": "<id>" },
+                { "key": "lat", "value": "40.7128" },
+                { "key": "lng", "value": "-74.0060" },
+                { "key": "radiusKm", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Jobs (Customer)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/jobs/my-jobs?status=BROADCAST",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs", "my-jobs"],
+              "query": [
+                { "key": "status", "value": "BROADCAST", "description": "PENDING | BROADCAST | BOOKED | ON_WAY | ARRIVED | LOADED | IN_TRANSIT | DELIVERED | CANCELLED" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Driver Jobs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/jobs/driver-jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs", "driver-jobs"],
+              "query": [
+                { "key": "status", "value": "", "disabled": true, "description": "PENDING | BROADCAST | BOOKED | ON_WAY | ARRIVED | LOADED | IN_TRANSIT | DELIVERED | CANCELLED" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Job by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/jobs/:id", "host": ["{{baseUrl}}"], "path": ["jobs", ":id"], "variable": [{ "key": "id", "value": "<job-id>" }] }
+          }
+        },
+        {
+          "name": "Accept Job (Driver)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/jobs/:id/accept", "host": ["{{baseUrl}}"], "path": ["jobs", ":id", "accept"], "variable": [{ "key": "id", "value": "<job-id>" }] }
+          }
+        },
+        {
+          "name": "Advance Job Status (Driver)",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/jobs/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["jobs", ":id", "status"],
+              "variable": [{ "key": "id", "value": "<job-id>" }]
+            },
+            "description": "Advances job through: BOOKED → ON_WAY → ARRIVED → LOADED → IN_TRANSIT → DELIVERED"
+          }
+        },
+        {
+          "name": "Cancel Job (Customer)",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/jobs/:id/cancel", "host": ["{{baseUrl}}"], "path": ["jobs", ":id", "cancel"], "variable": [{ "key": "id", "value": "<job-id>" }] }
+          }
+        },
+        {
+          "name": "Submit Review (Customer)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Great driver, very professional!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/jobs/:id/review", "host": ["{{baseUrl}}"], "path": ["jobs", ":id", "review"], "variable": [{ "key": "id", "value": "<job-id>" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payment",
+      "item": [
+        {
+          "name": "Create Payment Intent",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/payment/job/:jobId/intent",
+              "host": ["{{baseUrl}}"],
+              "path": ["payment", "job", ":jobId", "intent"],
+              "variable": [{ "key": "jobId", "value": "<delivered-job-id>" }]
+            },
+            "description": "Job must be in DELIVERED status and driver must have completed Stripe onboarding."
+          }
+        },
+        {
+          "name": "Stripe Webhook",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "stripe-signature", "value": "<stripe-signature>" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"type\": \"payment_intent.succeeded\", \"data\": { \"object\": {} } }"
+            },
+            "url": { "raw": "{{baseUrl}}/payment/webhook", "host": ["{{baseUrl}}"], "path": ["payment", "webhook"] },
+            "description": "Called by Stripe — use Stripe CLI to test locally.\nHandles: payment_intent.succeeded, account.updated"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Withdrawals",
+      "item": [
+        {
+          "name": "Request Withdrawal (Driver)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100.00\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/withdrawals/request", "host": ["{{baseUrl}}"], "path": ["withdrawals", "request"] },
+            "description": "Minimum $10. Driver must have completed Stripe onboarding. Balance is reserved immediately; payout is processed only after admin approval."
+          }
+        },
+        {
+          "name": "Get Withdrawal History (Driver)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/withdrawals/history", "host": ["{{baseUrl}}"], "path": ["withdrawals", "history"] }
+          }
+        },
+        {
+          "name": "Get Withdrawal Status (Driver / Admin)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/withdrawals/:withdrawalId", "host": ["{{baseUrl}}"], "path": ["withdrawals", ":withdrawalId"], "variable": [{ "key": "withdrawalId", "value": "<withdrawal-id>" }] }
+          }
+        },
+        {
+          "name": "Approve Withdrawal (Admin)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/withdrawals/:withdrawalId/approve", "host": ["{{baseUrl}}"], "path": ["withdrawals", ":withdrawalId", "approve"], "variable": [{ "key": "withdrawalId", "value": "<withdrawal-id>" }] },
+            "description": "Queues a Stripe transfer from the platform balance to the driver's connected account."
+          }
+        },
+        {
+          "name": "Reject Withdrawal (Admin)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/withdrawals/:withdrawalId/reject", "host": ["{{baseUrl}}"], "path": ["withdrawals", ":withdrawalId", "reject"], "variable": [{ "key": "withdrawalId", "value": "<withdrawal-id>" }] },
+            "description": "Rejects the withdrawal and restores the reserved balance back to the driver."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "Get Dashboard Stats",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin/dashboard", "host": ["{{baseUrl}}"], "path": ["admin", "dashboard"] }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Truck Types",
+          "item": [
+            {
+              "name": "Get All Truck Types",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin/truck-types", "host": ["{{baseUrl}}"], "path": ["admin", "truck-types"] }
+              }
+            },
+            {
+              "name": "Create Truck Type",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Flatbed\",\n  \"description\": \"Open flatbed truck\",\n  \"payloadCapacity\": 20000,\n  \"axleCount\": 5,\n  \"baseFare\": 50,\n  \"distanceRatePerKm\": 2.5,\n  \"timeRatePerHour\": 30,\n  \"capacityMultiplier\": 1.0\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/admin/truck-types", "host": ["{{baseUrl}}"], "path": ["admin", "truck-types"] }
+              }
+            },
+            {
+              "name": "Update Truck Type",
+              "request": {
+                "method": "PATCH",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"baseFare\": 60,\n  \"distanceRatePerKm\": 3.0,\n  \"isActive\": true\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/admin/truck-types/:id", "host": ["{{baseUrl}}"], "path": ["admin", "truck-types", ":id"], "variable": [{ "key": "id", "value": "<truck-type-id>" }] }
+              }
+            },
+            {
+              "name": "Delete Truck Type",
+              "request": {
+                "method": "DELETE",
+                "url": { "raw": "{{baseUrl}}/admin/truck-types/:id", "host": ["{{baseUrl}}"], "path": ["admin", "truck-types", ":id"], "variable": [{ "key": "id", "value": "<truck-type-id>" }] }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Drivers",
+          "item": [
+            {
+              "name": "Get All Drivers",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/admin/drivers?page=1&limit=20",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["admin", "drivers"],
+                  "query": [
+                    { "key": "page", "value": "1" },
+                    { "key": "limit", "value": "20" },
+                    { "key": "status", "value": "", "disabled": true, "description": "PENDING | APPROVED | REJECTED" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Pending Drivers",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin/drivers/pending", "host": ["{{baseUrl}}"], "path": ["admin", "drivers", "pending"] }
+              }
+            },
+            {
+              "name": "Get Driver Detail (with docs)",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin/drivers/:id", "host": ["{{baseUrl}}"], "path": ["admin", "drivers", ":id"], "variable": [{ "key": "id", "value": "<driver-profile-id>" }] }
+              }
+            },
+            {
+              "name": "Approve / Reject Driver",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"decision\": \"APPROVED\",\n  \"truckTypeId\": \"<truck-type-id>\",\n  \"numberPlate\": \"ABC-1234\",\n  \"truckModel\": \"Freightliner Cascadia\",\n  \"truckWeight\": 30000,\n  \"trailerType\": \"Flatbed\",\n  \"hourlyRate\": 75,\n  \"rejectionReason\": \"\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": { "raw": "{{baseUrl}}/admin/drivers/:id/approve", "host": ["{{baseUrl}}"], "path": ["admin", "drivers", ":id", "approve"], "variable": [{ "key": "id", "value": "<driver-profile-id>" }] },
+                "description": "Fill in fields from reviewing the driver's documents, then set decision to APPROVED or REJECTED"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Documents",
+          "item": [
+            {
+              "name": "Review Document",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"APPROVED\",\n  \"rejectionReason\": \"\"\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/admin/documents/:id/review", "host": ["{{baseUrl}}"], "path": ["admin", "documents", ":id", "review"], "variable": [{ "key": "id", "value": "<document-id>" }] }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Users",
+          "item": [
+            {
+              "name": "Get All Users",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/admin/users?page=1&limit=20",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["admin", "users"],
+                  "query": [
+                    { "key": "page", "value": "1" },
+                    { "key": "limit", "value": "20" },
+                    { "key": "role", "value": "", "disabled": true, "description": "CUSTOMER | DRIVER | ADMIN" },
+                    { "key": "status", "value": "", "disabled": true, "description": "ACTIVE | INACTIVE | SUSPENDED" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Block User",
+              "request": {
+                "method": "POST",
+                "url": { "raw": "{{baseUrl}}/admin/users/:id/block", "host": ["{{baseUrl}}"], "path": ["admin", "users", ":id", "block"], "variable": [{ "key": "id", "value": "<user-id>" }] }
+              }
+            },
+            {
+              "name": "Unblock User",
+              "request": {
+                "method": "POST",
+                "url": { "raw": "{{baseUrl}}/admin/users/:id/unblock", "host": ["{{baseUrl}}"], "path": ["admin", "users", ":id", "unblock"], "variable": [{ "key": "id", "value": "<user-id>" }] }
+              }
+            },
+            {
+              "name": "Delete User (Permanent)",
+              "request": {
+                "method": "DELETE",
+                "url": { "raw": "{{baseUrl}}/admin/users/:id", "host": ["{{baseUrl}}"], "path": ["admin", "users", ":id"], "variable": [{ "key": "id", "value": "<user-id>" }] },
+                "description": "Permanently deletes user, all related DB data, and all S3 files (avatar, documents, truck photos)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Jobs",
+          "item": [
+            {
+              "name": "Get All Jobs",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{baseUrl}}/admin/jobs?page=1&limit=20",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["admin", "jobs"],
+                  "query": [
+                    { "key": "page", "value": "1" },
+                    { "key": "limit", "value": "20" },
+                    { "key": "status", "value": "", "disabled": true, "description": "PENDING | BROADCAST | BOOKED | ON_WAY | ARRIVED | LOADED | IN_TRANSIT | DELIVERED | CANCELLED" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Job Detail",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin/jobs/:id", "host": ["{{baseUrl}}"], "path": ["admin", "jobs", ":id"], "variable": [{ "key": "id", "value": "<job-id>" }] }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Withdrawals",
+          "item": [
+            {
+              "name": "Get Pending Withdrawals",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin/withdrawals/pending", "host": ["{{baseUrl}}"], "path": ["admin", "withdrawals", "pending"] }
+              }
+            },
+            {
+              "name": "Approve Withdrawal",
+              "request": {
+                "method": "POST",
+                "url": { "raw": "{{baseUrl}}/withdrawals/:id/approve", "host": ["{{baseUrl}}"], "path": ["withdrawals", ":id", "approve"], "variable": [{ "key": "id", "value": "<withdrawal-id>" }] },
+                "description": "Triggers a Stripe transfer to the driver. Balance was already reserved when the driver requested."
+              }
+            },
+            {
+              "name": "Reject Withdrawal",
+              "request": {
+                "method": "POST",
+                "url": { "raw": "{{baseUrl}}/withdrawals/:id/reject", "host": ["{{baseUrl}}"], "path": ["withdrawals", ":id", "reject"], "variable": [{ "key": "id", "value": "<withdrawal-id>" }] },
+                "description": "Rejects the withdrawal and returns the reserved amount to the driver's balance."
+              }
+            }
+          ]
+        },
+        {
+          "name": "CMS",
+          "item": [
+            {
+              "name": "Get CMS Page",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{baseUrl}}/admin/cms/:slug", "host": ["{{baseUrl}}"], "path": ["admin", "cms", ":slug"], "variable": [{ "key": "slug", "value": "privacy-policy" }] }
+              }
+            },
+            {
+              "name": "Upsert CMS Page",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Privacy Policy\",\n  \"content\": \"<h1>Privacy Policy</h1><p>Your content here...</p>\"\n}"
+                },
+                "url": { "raw": "{{baseUrl}}/admin/cms/:slug", "host": ["{{baseUrl}}"], "path": ["admin", "cms", ":slug"], "variable": [{ "key": "slug", "value": "privacy-policy" }] }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CMS (Public)",
+      "item": [
+        {
+          "name": "Get CMS Page",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/cms/:slug", "host": ["{{baseUrl}}"], "path": ["cms", ":slug"], "variable": [{ "key": "slug", "value": "privacy-policy" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Socket.IO",
+      "description": "Real-time WebSocket events via Socket.IO.\n\nURL: {{socketUrl}}  (no /api/v1 prefix — connects directly to the server root)\nNamespace: /  (default)\nTransport: Socket.IO (not plain WebSocket)\n\nAUTHENTICATION\nPass the JWT accessToken in the handshake auth object:\n  { auth: { token: '<accessToken>' } }\nThe gateway verifies it on connect and disconnects the socket if invalid or missing.\n\nROOMS\n  user:{userId}        — every authenticated user joins this room automatically on connect\n  driver:available     — drivers join this manually via driver:subscribe-jobs\n\nFLOW OVERVIEW\n  1. Connect with accessToken in handshake auth\n  2. Driver calls driver:subscribe-jobs to receive broadcast job offers\n  3. Driver emits driver:location every ~3-5 s while on an active job\n  4. Server forwards driver:location to the assigned customer in real time\n  5. Server emits job:new / job:direct-offer / job:status-update / notification as server-side events",
+      "item": [
+        {
+          "name": "── CLIENT → SERVER ──",
+          "item": [
+            {
+              "name": "Connect (handshake)",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{socketUrl}}", "host": ["{{socketUrl}}"] },
+                "description": "Establish a Socket.IO connection.\n\nClient code example:\n  import { io } from 'socket.io-client';\n  const socket = io('{{socketUrl}}', {\n    auth: { token: '<accessToken>' },\n    transports: ['websocket'],\n  });\n\nOn success the socket is placed in room user:{userId}.\nOn failure (missing/invalid token) the server immediately disconnects the client."
+              }
+            },
+            {
+              "name": "driver:subscribe-jobs",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{socketUrl}}", "host": ["{{socketUrl}}"] },
+                "description": "ROLE: DRIVER only\n\nJoins the driver:available room so the driver receives job:new broadcast events.\nCall this after connecting and whenever the driver goes online.\n\nEmit payload:\n  socket.emit('driver:subscribe-jobs', { radius: 20 });\n\nPayload fields:\n  radius  number  optional  Search radius in km (stored client-side; default 20)\n\nAcknowledgement (returned to caller):\n  { event: 'subscribed', data: { radius: 20 } }"
+              }
+            },
+            {
+              "name": "driver:unsubscribe-jobs",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{socketUrl}}", "host": ["{{socketUrl}}"] },
+                "description": "ROLE: DRIVER only\n\nLeaves the driver:available room. The driver will no longer receive job:new events.\nCall this when the driver goes offline.\n\nEmit:\n  socket.emit('driver:unsubscribe-jobs');\n\nAcknowledgement:\n  { event: 'unsubscribed' }"
+              }
+            },
+            {
+              "name": "driver:location",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{socketUrl}}", "host": ["{{socketUrl}}"] },
+                "description": "ROLE: DRIVER only\n\nSend the driver's live GPS position. Emit every 3-5 seconds while on an active job.\n\nEmit payload:\n  socket.emit('driver:location', {\n    lat:     40.7128,\n    lng:     -74.0060,\n    heading: 90,      // optional, degrees 0-360\n    speed:   60,      // optional, km/h\n  });\n\nPayload fields:\n  lat      number   required  Latitude\n  lng      number   required  Longitude\n  heading  number   optional  Bearing in degrees\n  speed    number   optional  Speed in km/h\n\nServer behaviour:\n  1. Looks up the driver's active job (status: BOOKED | ON_WAY | ARRIVED | LOADED | IN_TRANSIT)\n  2. Immediately forwards coordinates to user:{customerId} room as driver:location event\n  3. Throttled DB write — persists latest position to DriverProfile at most once per 5 seconds\n     (latitude, longitude, lastLocationAt)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "── SERVER → CLIENT ──",
+          "item": [
+            {
+              "name": "job:new  [driver:available room]",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{socketUrl}}", "host": ["{{socketUrl}}"] },
+                "description": "Broadcast job available — emitted to ALL drivers in the driver:available room.\nTriggered when a customer creates a broadcast job.\n\nListen:\n  socket.on('job:new', (data) => { ... });\n\nPayload:\n  {\n    jobId:          string   // Job ID\n    truckType:      string   // e.g. 'Flatbed'\n    pickupAddress:  string\n    dropoffAddress: string\n    distanceKm:     number\n    estimatedFare:  number\n  }"
+              }
+            },
+            {
+              "name": "job:direct-offer  [user:{driverId}]",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{socketUrl}}", "host": ["{{socketUrl}}"] },
+                "description": "Direct job offer — emitted to a specific driver's user:{driverId} room.\nTriggered when a customer creates a job with targetDriverId.\n\nListen:\n  socket.on('job:direct-offer', (data) => { ... });\n\nPayload:\n  {\n    jobId:          string\n    pickupAddress:  string\n    dropoffAddress: string\n    estimatedFare:  number\n    timeoutSeconds: number   // offer expiry window\n  }"
+              }
+            },
+            {
+              "name": "job:status-update  [user:{customerId}]",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{socketUrl}}", "host": ["{{socketUrl}}"] },
+                "description": "Job status changed — emitted to the customer's user:{customerId} room.\nTriggered whenever a driver advances the job status (accept, ON_WAY, ARRIVED, etc.).\n\nListen:\n  socket.on('job:status-update', (data) => { ... });\n\nPayload:\n  {\n    jobId:  string\n    status: 'BOOKED' | 'ON_WAY' | 'ARRIVED' | 'LOADED' | 'IN_TRANSIT' | 'DELIVERED' | 'CANCELLED'\n  }"
+              }
+            },
+            {
+              "name": "driver:location  [user:{customerId}]",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{socketUrl}}", "host": ["{{socketUrl}}"] },
+                "description": "Real-time driver GPS forwarded to the assigned customer.\nEmitted immediately (not throttled) every time the driver sends driver:location.\nOnly emitted while the job is in an active status (BOOKED | ON_WAY | ARRIVED | LOADED | IN_TRANSIT).\n\nListen:\n  socket.on('driver:location', (data) => { ... });\n\nPayload:\n  {\n    jobId:   string\n    lat:     number\n    lng:     number\n    heading: number | undefined\n    speed:   number | undefined\n    ts:      number   // Unix ms timestamp\n  }"
+              }
+            },
+            {
+              "name": "notification  [user:{userId}]",
+              "request": {
+                "method": "GET",
+                "url": { "raw": "{{socketUrl}}", "host": ["{{socketUrl}}"] },
+                "description": "In-app notification pushed to a specific user's user:{userId} room.\nEmitted whenever NotificationService.create() is called (job events, system alerts, etc.).\n\nListen:\n  socket.on('notification', (data) => { ... });\n\nPayload:\n  {\n    id:        string\n    type:      string   // e.g. JOB_ACCEPTED, PAYMENT_RECEIVED\n    title:     string\n    message:   string\n    data:      object   // extra context (jobId, amount, etc.)\n    createdAt: string   // ISO timestamp\n  }"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

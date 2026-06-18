@@ -1,0 +1,66 @@
+{
+  "cli": {
+    "version": ">= 18.0.1",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "IPA_BASE": "https://api.jobsitex.co/api/v1",
+        "SOCKET_URL": "https://api.jobsitex.co",
+        "GOOGLE_MAPS_API_KEY": "AIzaSyCB3G-ob1C6JEUF_wotuQY1RMPKIbRkPIw",
+        "LOGIN": "/auth/login",
+        "REGISTER": "/auth/signup",
+        "RESEND_OTP": "/auth/resend-otp",
+        "IP_FIND": "ae7ebeb2-ab5b-4317-b2ca-41ecdc9fd945",
+        "AVAILABLE_JOBS": "/jobs/available",
+        "STATUS_DRIVER": "/driver/availability",
+        "LOCATION_UPDATE": "/driver/location",
+        "DRIVER_DETAILS": "/driver/profile",
+        "GOOGLE_WEB_CLIENT_ID": "335149546838-04hadks6m2odtva0c4j38mq7k7s7f01s.apps.googleusercontent.com",
+        "GOOGLE_IOS_CLIENT_ID": "335149546838-k4i1locg3rro8nbtrmlgl5h6ribsb66s.apps.googleusercontent.com"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "IPA_BASE": "https://api.jobsitex.co/api/v1",
+        "SOCKET_URL": "https://api.jobsitex.co",
+        "GOOGLE_MAPS_API_KEY": "AIzaSyCB3G-ob1C6JEUF_wotuQY1RMPKIbRkPIw",
+        "LOGIN": "/auth/login",
+        "REGISTER": "/auth/signup",
+        "RESEND_OTP": "/auth/resend-otp",
+        "IP_FIND": "ae7ebeb2-ab5b-4317-b2ca-41ecdc9fd945",
+        "AVAILABLE_JOBS": "/jobs/available",
+        "STATUS_DRIVER": "/driver/availability",
+        "LOCATION_UPDATE": "/driver/location",
+        "DRIVER_DETAILS": "/driver/profile",
+        "GOOGLE_WEB_CLIENT_ID": "335149546838-04hadks6m2odtva0c4j38mq7k7s7f01s.apps.googleusercontent.com",
+        "GOOGLE_IOS_CLIENT_ID": "335149546838-k4i1locg3rro8nbtrmlgl5h6ribsb66s.apps.googleusercontent.com"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "IPA_BASE": "https://api.jobsitex.co/api/v1",
+        "SOCKET_URL": "https://api.jobsitex.co",
+        "GOOGLE_MAPS_API_KEY": "AIzaSyCB3G-ob1C6JEUF_wotuQY1RMPKIbRkPIw",
+        "LOGIN": "/auth/login",
+        "REGISTER": "/auth/signup",
+        "RESEND_OTP": "/auth/resend-otp",
+        "IP_FIND": "ae7ebeb2-ab5b-4317-b2ca-41ecdc9fd945",
+        "AVAILABLE_JOBS": "/jobs/available",
+        "STATUS_DRIVER": "/driver/availability",
+        "LOCATION_UPDATE": "/driver/location",
+        "DRIVER_DETAILS": "/driver/profile",
+        "GOOGLE_WEB_CLIENT_ID": "335149546838-04hadks6m2odtva0c4j38mq7k7s7f01s.apps.googleusercontent.com",
+        "GOOGLE_IOS_CLIENT_ID": "335149546838-k4i1locg3rro8nbtrmlgl5h6ribsb66s.apps.googleusercontent.com"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

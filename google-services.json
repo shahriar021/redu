@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "335149546838",
+    "project_id": "jobsitex-8451e",
+    "storage_bucket": "jobsitex-8451e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:335149546838:android:bfd32e07415d15663ceaf7",
+        "android_client_info": {
+          "package_name": "com.AhmedReFu.JOBSITEX"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "335149546838-04hadks6m2odtva0c4j38mq7k7s7f01s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUNXUAgCEkiBPH23-wxssO62wWsrfG3l0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "335149546838-04hadks6m2odtva0c4j38mq7k7s7f01s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "335149546838-k4i1locg3rro8nbtrmlgl5h6ribsb66s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.AhmedReFu.JOBSITEX"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
