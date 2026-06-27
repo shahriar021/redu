@@ -43,17 +43,20 @@ function parseComponents(components: any[]): GeocodedAddress | null {
 
 async function tryGeocode(lat: number, lng: number): Promise<GeocodedAddress | null> {
   try {
+    console.log('[geocoding] API key present:', !!GOOGLE_MAPS_API_KEY, GOOGLE_MAPS_API_KEY?.slice(0, 6))
     const res = await axios.get(GEOCODE_URL, {
       params: { latlng: `${lat},${lng}`, key: GOOGLE_MAPS_API_KEY },
       timeout: 6000,
     })
+    console.log('[geocoding] response status:', res.data?.status, 'error_message:', res.data?.error_message)
     const results: any[] = res.data?.results ?? []
+    console.log('[geocoding] result count:', results.length)
     for (const result of results) {
       const parsed = parseComponents(result.address_components ?? [])
       if (parsed) return parsed
     }
-  } catch {
-    // network error or timeout — caller tries next candidate
+  } catch (error: any) {
+    console.error('[geocoding] request failed:', error?.response?.data || error?.message || error)
   }
   return null
 }

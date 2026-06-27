@@ -26,6 +26,7 @@ const API_BASE_URL = IPA_BASE
 const END_POINTS = { STATUS_DRIVER, LOCATION_UPDATE }
 
 const DriverHome = () => {
+  console.log('DriverHome RENDERED')
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>()
   const rotateAnim = useRef(new Animated.Value(0)).current
   const locationWatcherRef = useRef<Location.LocationSubscription | null>(null)
@@ -58,27 +59,49 @@ const DriverHome = () => {
     return token
   }
 
+  // const getAddressFromCoordinates = async (latitude: number, longitude: number) => {
+  //   try {
+  //     const addresses = await Location.reverseGeocodeAsync({
+  //       latitude,
+  //       longitude,
+  //     })
+
+  //     if (addresses.length > 0) {
+  //       const address = addresses[0]
+  //       const city = address.city || address.region || address.district || 'Unknown'
+  //       const state = address.region || ''
+  //       const stateCode = state ? state.substring(0, 2).toUpperCase() : ''
+  //       return `${city}${stateCode ? ', ' + stateCode : ''}`
+  //     }
+
+  //     return 'Unknown Location'
+  //   } catch (error) {
+  //     console.error('Error getting address:', error)
+  //     return 'Unknown Location'
+  //   }
+  // }
+
   const getAddressFromCoordinates = async (latitude: number, longitude: number) => {
-    try {
-      const addresses = await Location.reverseGeocodeAsync({
-        latitude,
-        longitude,
-      })
+  try {
+    const addresses = await Location.reverseGeocodeAsync({ latitude, longitude })
 
-      if (addresses.length > 0) {
-        const address = addresses[0]
-        const city = address.city || address.region || address.district || 'Unknown'
-        const state = address.region || ''
-        const stateCode = state ? state.substring(0, 2).toUpperCase() : ''
-        return `${city}${stateCode ? ', ' + stateCode : ''}`
-      }
+    console.log('Reverse geocode result:', JSON.stringify(addresses, null, 2))
 
-      return 'Unknown Location'
-    } catch (error) {
-      console.error('Error getting address:', error)
-      return 'Unknown Location'
+    if (addresses.length > 0) {
+      const address = addresses[0]
+      const city = address.city || address.region || address.district || 'Unknown'
+      const state = address.region || ''
+      const stateCode = state ? state.substring(0, 2).toUpperCase() : ''
+      return `${city}${stateCode ? ', ' + stateCode : ''}`
     }
+
+    console.log('Reverse geocode returned empty array for', latitude, longitude)
+    return 'Unknown Location'
+  } catch (error) {
+    console.error('Error getting address:', error)
+    return 'Unknown Location'
   }
+}
 
   const updateDriverStatus = useCallback(async (status: 'active' | 'inactive') => {
     try {
@@ -147,47 +170,87 @@ const DriverHome = () => {
     return latDiff > 0.0003 || lngDiff > 0.0003
   }
 
+  // const fetchCurrentLocation = useCallback(async () => {
+  //   try {
+  //     setIsLoadingLocation(true)
+
+  //     const { status } = await Location.requestForegroundPermissionsAsync()
+  //     console.log('permission status:', status)
+
+  //     if (status !== 'granted') {
+  //       setCurrentLocation('Permission Denied')
+  //       Alert.alert('Permission needed', 'Location permission allow koro.')
+  //       return
+  //     }
+
+  //     const isLocationAvailable = await Location.hasServicesEnabledAsync()
+  //     if (!isLocationAvailable) {
+  //       setCurrentLocation('Location Services Off')
+  //       Alert.alert('Location Services Off', 'Device er location service on koro.')
+  //       return
+  //     }
+
+  //     const location = await Location.getCurrentPositionAsync({
+  //       accuracy: Location.Accuracy.High,
+  //     })
+
+  //     const { latitude, longitude } = location.coords
+
+  //     const address = await getAddressFromCoordinates(latitude, longitude)
+
+  //     setCurrentLocation(address)
+  //     setLocationCoords({ latitude, longitude })
+
+  //     if (isOnline) {
+  //       await updateDriverLocation(latitude, longitude)
+  //       lastSentCoordsRef.current = { latitude, longitude }
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching location:', error)
+  //     setCurrentLocation('Error Getting Location')
+  //   } finally {
+  //     setIsLoadingLocation(false)
+  //   }
+  // }, [isOnline, updateDriverLocation])
   const fetchCurrentLocation = useCallback(async () => {
-    try {
-      setIsLoadingLocation(true)
+  console.log('STEP 1: fetchCurrentLocation start')
+  try {
+    setIsLoadingLocation(true)
 
-      const { status } = await Location.requestForegroundPermissionsAsync()
+    const { status } = await Location.requestForegroundPermissionsAsync()
+    console.log('STEP 2: permission status:', status)
 
-      if (status !== 'granted') {
-        setCurrentLocation('Permission Denied')
-        Alert.alert('Permission needed', 'Location permission allow koro.')
-        return
-      }
-
-      const isLocationAvailable = await Location.hasServicesEnabledAsync()
-      if (!isLocationAvailable) {
-        setCurrentLocation('Location Services Off')
-        Alert.alert('Location Services Off', 'Device er location service on koro.')
-        return
-      }
-
-      const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-      })
-
-      const { latitude, longitude } = location.coords
-
-      const address = await getAddressFromCoordinates(latitude, longitude)
-
-      setCurrentLocation(address)
-      setLocationCoords({ latitude, longitude })
-
-      if (isOnline) {
-        await updateDriverLocation(latitude, longitude)
-        lastSentCoordsRef.current = { latitude, longitude }
-      }
-    } catch (error) {
-      console.error('Error fetching location:', error)
-      setCurrentLocation('Error Getting Location')
-    } finally {
-      setIsLoadingLocation(false)
+    if (status !== 'granted') {
+      setCurrentLocation('Permission Denied')
+      return
     }
-  }, [isOnline, updateDriverLocation])
+
+    const isLocationAvailable = await Location.hasServicesEnabledAsync()
+    console.log('STEP 3: services enabled:', isLocationAvailable)
+    if (!isLocationAvailable) {
+      setCurrentLocation('Location Services Off')
+      return
+    }
+
+    console.log('STEP 4: calling getCurrentPositionAsync...')
+    const location = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.High,
+    })
+    console.log('STEP 5: got coords', location.coords)
+
+    const { latitude, longitude } = location.coords
+    const address = await getAddressFromCoordinates(latitude, longitude)
+    console.log('STEP 6: resolved address', address)
+
+    setCurrentLocation(address)
+    setLocationCoords({ latitude, longitude })
+  } catch (error) {
+    console.error('STEP X: ERROR', error)
+    setCurrentLocation('Error Getting Location')
+  } finally {
+    setIsLoadingLocation(false)
+  }
+}, [isOnline, updateDriverLocation])
 
   const startWatchingLocation = useCallback(async () => {
     try {

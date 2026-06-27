@@ -2,6 +2,7 @@ const {
   withDangerousMod,
   withAppBuildGradle,
   withProjectBuildGradle,
+  withAndroidManifest, 
 } = require('@expo/config-plugins')
 const path = require('path')
 const fs = require('fs')
@@ -59,11 +60,35 @@ const withApplyGoogleServicesPlugin = (config) =>
     return cfg
   })
 
+const withGoogleMapsApiKey = (config) =>
+  withAndroidManifest(config, (cfg) => {
+    const mainApplication = cfg.modResults.manifest.application[0]
+
+    // Remove existing key if present (avoid duplicates)
+    mainApplication['meta-data'] = (mainApplication['meta-data'] || []).filter(
+      (item) => item.$['android:name'] !== 'com.google.android.geo.API_KEY'
+    )
+
+    // Inject the key from app.json
+    const apiKey = config.android?.config?.googleMaps?.apiKey
+    if (apiKey) {
+      mainApplication['meta-data'].push({
+        $: {
+          'android:name': 'com.google.android.geo.API_KEY',
+          'android:value': apiKey,
+        },
+      })
+    }
+
+    return cfg
+  })
+
 const withGoogleServicesJson = (config) => {
   config = withCopyGoogleServicesAndroid(config)
   config = withCopyGoogleServicesIos(config)
   config = withGoogleServicesClasspath(config)
   config = withApplyGoogleServicesPlugin(config)
+  config = withGoogleMapsApiKey(config)
   return config
 }
 
