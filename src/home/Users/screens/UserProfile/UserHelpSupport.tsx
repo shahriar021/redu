@@ -1,7 +1,10 @@
 import { Ionicons } from '@expo/vector-icons'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
-import React, { useState } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
 import {
+    ActivityIndicator,
     Linking,
     ScrollView,
     Text,
@@ -10,38 +13,49 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { AuthStackParamList } from '../../../../Navigation/type'
+import { IPA_BASE } from '@env'
 
 interface FAQ {
+    id: string
     question: string
     answer: string
 }
 
 const UserHelpSupport = () => {
     const navigation = useNavigation<NavigationProp<AuthStackParamList>>()
+    const [faqs, setFaqs] = useState<FAQ[]>([])
     const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
-    const faqs: FAQ[] = [
-        {
-            question: 'How do I update my profile information?',
-            answer: 'To update your profile information, go to the Profile tab, tap on "Personal Information", then tap the edit icon. Make your changes and tap "Save Changes" to update your profile.'
-        },
-        {
-            question: 'What payment methods are accepted?',
-            answer: 'We accept various payment methods including credit/debit cards (Visa, Mastercard, American Express), PayPal, and digital wallets. All payments are processed securely through our payment gateway.'
-        },
-        {
-            question: 'How can I track my shipments?',
-            answer: 'You can track your shipments in real-time through the app. Go to the Jobs tab, select your active job, and you\'ll see the live location of the driver and estimated arrival time. You\'ll also receive push notifications with updates.'
-        },
-        {
-            question: 'How do I cancel a booking?',
-            answer: 'To cancel a booking, go to your active jobs, select the job you want to cancel, and tap the "Cancel" button. Please note that cancellation policies may apply depending on how close to the pickup time you cancel.'
-        },
-        {
-            question: 'What if my driver is late?',
-            answer: 'If your driver is running late, you\'ll receive automatic notifications. You can also contact the driver directly through the app. If there are significant delays, please contact our support team.'
-        },
-    ]
+    const handleBack = () => navigation.goBack()
+
+    const fetchFAQs = async () => {
+        try {
+            setIsLoading(true)
+            setError(null)
+
+            const token = await AsyncStorage.getItem('vToken')
+
+            const response = await axios.get<{ data: FAQ[] }>(
+                `${IPA_BASE}/faq`,
+                {
+                    headers: { Authorization: token ? `Bearer ${token}` : '' },
+                    timeout: 15000,
+                }
+            )
+            console.log(response, 'faqs')
+            setFaqs(response.data.data)
+        } catch (err) {
+            setError('Failed to load FAQs. Please try again.')
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchFAQs()
+    }, [])
 
     const toggleFAQ = (index: number) => {
         setExpandedIndex(expandedIndex === index ? null : index)
@@ -49,10 +63,6 @@ const UserHelpSupport = () => {
 
     const handleEmailSupport = () => {
         Linking.openURL('mailto:support@jobsitex.com?subject=Support Request')
-    }
-
-    const handleBack = () => {
-        navigation.goBack()
     }
 
     return (
@@ -78,9 +88,42 @@ const UserHelpSupport = () => {
                         Frequently Asked Questions
                     </Text>
 
+                    {/* Loading */}
+                    {isLoading && (
+                        <View className='items-center justify-center py-10'>
+                            <ActivityIndicator size="large" />
+                            <Text className='text-gray-medium mt-3'>Loading...</Text>
+                        </View>
+                    )}
+
+                    {/* Error */}
+                    {!isLoading && error && (
+                        <View className='items-center justify-center py-10'>
+                            <Ionicons name="alert-circle-outline" size={48} color="#EF4444" />
+                            <Text className='text-base text-gray-medium text-center mt-4'>{error}</Text>
+                            <TouchableOpacity
+                                onPress={fetchFAQs}
+                                activeOpacity={0.7}
+                                className='mt-6 bg-primary px-6 py-3 rounded-xl'
+                            >
+                                <Text className='text-white font-semibold'>Try Again</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+
+                    {/* Empty */}
+                    {!isLoading && !error && faqs.length === 0 && (
+                        <View className='items-center justify-center py-10'>
+                            <Ionicons name="help-circle-outline" size={48} color="#9CA3AF" />
+                            <Text className='text-base text-gray-medium text-center mt-4'>
+                                No FAQs available at the moment.
+                            </Text>
+                        </View>
+                    )}
+
                     {/* FAQ Items */}
-                    {faqs.map((faq, index) => (
-                        <View key={index} className='mb-3'>
+                    {!isLoading && !error && faqs.map((faq, index) => (
+                        <View key={faq.id} className='mb-3'>
                             <TouchableOpacity
                                 onPress={() => toggleFAQ(index)}
                                 className='bg-white rounded-2xl py-5 px-5 flex-row items-center justify-between'
@@ -134,7 +177,8 @@ const UserHelpSupport = () => {
                     </TouchableOpacity>
 
                     {/* Support Info */}
-                    <View className='mt-6 bg-white rounded-2xl p-5'
+                    <View
+                        className='mt-6 bg-white rounded-2xl p-5'
                         style={{
                             shadowColor: '#000',
                             shadowOffset: { width: 0, height: 1 },

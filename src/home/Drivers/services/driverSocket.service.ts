@@ -89,11 +89,34 @@ class DriverSocketService {
       console.error('Driver socket error:', err.message)
     })
 
-    return new Promise((resolve) => {
-      this.socket!.once('connect', () => resolve(this.socket!))
-      // Fallback: resolve after 5 s so callers are never blocked
-      setTimeout(() => resolve(this.socket!), 5000)
-    })
+    // return new Promise((resolve) => {
+    //   this.socket!.once('connect', () => resolve(this.socket!))
+    //   // Fallback: resolve after 5 s so callers are never blocked
+    //   setTimeout(() => resolve(this.socket!), 5000)
+    // })
+    return new Promise((resolve, reject) => {
+  const onConnect = () => {
+    cleanup()
+    resolve(this.socket!)
+  }
+  const onError = (err: Error) => {
+    cleanup()
+    reject(err)
+  }
+  const onTimeout = () => {
+    cleanup()
+    reject(new Error('Socket connection timed out'))
+  }
+  const cleanup = () => {
+    this.socket?.off('connect', onConnect)
+    this.socket?.off('connect_error', onError)
+    clearTimeout(timer)
+  }
+
+  this.socket!.once('connect', onConnect)
+  this.socket!.once('connect_error', onError)
+  const timer = setTimeout(onTimeout, 5000)
+})
   }
 
   subscribeJobs(radius = 20): void {

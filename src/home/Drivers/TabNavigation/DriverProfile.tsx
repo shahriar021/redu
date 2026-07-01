@@ -228,6 +228,10 @@ const DriverProfile = () => {
             <View className='h-px bg-gray-100 my-2' />
             <MenuItem icon={<Ionicons name='shield-checkmark-outline' size={24} color='#9CA3AF' />} label='Privacy Policy' onPress={() => navigation.navigate('UserPrivacyPolicy')} />
             <View className='h-px bg-gray-100 my-2' />
+            <MenuItem icon={<Ionicons name="newspaper-outline" size={22} color="#9CA3AF" />} label='Terms & Conditions' onPress={() => navigation.navigate('UserPrivacyPolicy')} />
+            <View className='h-px bg-gray-100 my-2' />
+            <MenuItem icon={<Ionicons name='shield-checkmark-outline' size={24} color='#9CA3AF' />} label='About Us' onPress={() => navigation.navigate('UserPrivacyPolicy')} />
+            <View className='h-px bg-gray-100 my-2' />
             <MenuItem icon={<Ionicons name='help-circle-outline' size={24} color='#9CA3AF' />} label='Help & Support' onPress={() => navigation.navigate('UserHelpSupport')} />
           </View>
         </View>

@@ -141,6 +141,14 @@ const UserProfile = () => {
         navigation.navigate("UserPrivacyPolicy")
     }
 
+    const handleTermsNCondition = () => {
+        navigation.navigate("UserTermsNCondition")
+    }
+
+    const handleAboutUs = () => {
+        navigation.navigate("UserAboutUs")
+    }
+
     const handleHelpSupport = () => {
         navigation.navigate("UserHelpSupport")
     }
@@ -360,6 +368,57 @@ const UserProfile = () => {
                                 <Ionicons name="shield-checkmark-outline" size={22} color="#9CA3AF" />
                                 <Text className='text-base text-gray-700 ml-4'>
                                     Privacy Policy
+                                </Text>
+                            </View>
+                            <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+                        </TouchableOpacity>
+
+                        <View className='h-px bg-gray-100 my-1' />
+
+                        {/* Terms */}
+                        <TouchableOpacity
+                            onPress={handleTermsNCondition}
+                            className='flex-row items-center justify-between py-3'
+                            activeOpacity={0.7}
+                        >
+                            <View className='flex-row items-center flex-1'>
+                                <Ionicons name="newspaper-outline" size={22} color="#9CA3AF" />
+                                <Text className='text-base text-gray-700 ml-4'>
+                                    Terms and Conditions
+                                </Text>
+                            </View>
+                            <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+                        </TouchableOpacity>
+
+                        <View className='h-px bg-gray-100 my-1' />
+
+                        {/* about */}
+                        <TouchableOpacity
+                            onPress={handleAboutUs}
+                            className='flex-row items-center justify-between py-3'
+                            activeOpacity={0.7}
+                        >
+                            <View className='flex-row items-center flex-1'>
+                                <Ionicons name="information-circle-outline" size={22} color="#9CA3AF" />
+                                <Text className='text-base text-gray-700 ml-4'>
+                                    About Us
+                                </Text>
+                            </View>
+                            <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+                        </TouchableOpacity>
+
+                        <View className='h-px bg-gray-100 my-1' />
+
+                        {/* faq */}
+                        <TouchableOpacity
+                            onPress={handlePrivacyPolicy}
+                            className='flex-row items-center justify-between py-3'
+                            activeOpacity={0.7}
+                        >
+                            <View className='flex-row items-center flex-1'>
+                                <Ionicons name="chatbubble-ellipses-outline" size={22} color="#9CA3AF" />
+                                <Text className='text-base text-gray-700 ml-4'>
+                                    FaQ
                                 </Text>
                             </View>
                             <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />

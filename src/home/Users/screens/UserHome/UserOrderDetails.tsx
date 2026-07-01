@@ -3,12 +3,12 @@ import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import React, { useState, useEffect } from 'react'
 import {
-    ScrollView,
-    StatusBar,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StatusBar,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
   Alert,
   ActivityIndicator
 } from 'react-native'
@@ -18,6 +18,7 @@ import axios from 'axios'
 import { IPA_BASE } from '@env'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useBooking } from '../../../../Auth/BookingContext'
+import { kmToMiles } from '../../../../Utils/kmtoMiles'
 
 interface CostBreakdown {
   basePrice: number
@@ -120,17 +121,17 @@ const UserOrderDetails = () => {
 
       if (response.data?.success) {
         const jobId = response.data.data?.job?.id ?? response.data.data?.id
-        ;(navigation as any).navigate('UserFindingDrivers', {
-          jobId,
-          pickup: pickupLocation,
-          dropoff: dropoffLocation,
-          routeData,
-          selectedTruck,
-          scheduleDate,
-          scheduleTime,
-          workNotes: localWorkNotes,
-          costBreakdown,
-        })
+          ; (navigation as any).navigate('UserFindingDrivers', {
+            jobId,
+            pickup: pickupLocation,
+            dropoff: dropoffLocation,
+            routeData,
+            selectedTruck,
+            scheduleDate,
+            scheduleTime,
+            workNotes: localWorkNotes,
+            costBreakdown,
+          })
       } else {
         Alert.alert('Error', response.data?.message || 'Failed to create booking')
       }
@@ -261,7 +262,9 @@ const UserOrderDetails = () => {
           </View>
 
           <View className='flex-row items-center justify-between py-2'>
-            <Text className='text-sm text-gray-600'>Distance Cost ({routeData?.distance?.toFixed(1)} km @ $2.5/km)</Text>
+            <Text className='text-sm text-gray-600'>
+              Distance Cost ({kmToMiles(routeData?.distance)} mi @ ${(2.5 / 0.621371).toFixed(2)}/mi)
+            </Text>
             <Text className='text-sm font-bold text-gray-800'>${costBreakdown.distanceCost}</Text>
           </View>
 

@@ -67,6 +67,8 @@ import { BookingProvider } from './src/Auth/BookingContext';
 import { ActivityIndicator, View } from 'react-native';
 import UserLiveTracking from './src/home/Users/screens/UserHome/UserLiveTracking';
 import { navigationRef } from './src/Navigation/navigationRef';
+import UserTermsNCondition from './src/home/Users/screens/UserProfile/UserTermsNCondition';
+import UserAboutUs from './src/home/Users/screens/UserProfile/UserAboutUs';
 
 // Android 8+ requires a notification channel to be created before push can appear
 if (Platform.OS === 'android') {
@@ -174,6 +176,8 @@ function AppNavigation() {
       <RootNav.Screen name="UserPasswordChange" options={slideRight} component={UserPasswordChange} />
       <RootNav.Screen name="UserProfile" options={slideRight} component={UserProfile} />
       <RootNav.Screen name="UserPrivacyPolicy" options={slideRight} component={UserPrivacyPolicy} />
+      <RootNav.Screen name="UserTermsNCondition" options={slideRight} component={UserTermsNCondition} />
+      <RootNav.Screen name="UserAboutUs" options={slideRight} component={UserAboutUs} />
       <RootNav.Screen name="UserHelpSupport" options={slideRight} component={UserHelpSupport} />
       <RootNav.Screen name="UserActiveJobsDetails" options={slideRight} component={UserActiveJobsDetails} />
       <RootNav.Screen name="UserCompleteJobsDetails" options={slideRight} component={UserCompleteJobsDetails} />

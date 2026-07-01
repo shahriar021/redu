@@ -23,6 +23,7 @@ import { useLocation } from '../../../../Utils/hooks/useLocation'
 import { useRouteDirection } from '../../../../Utils/hooks/useRouteDirection'
 import { RouteMap } from '../../Components/SearchLocation/RouteMap'
 import { LocationData } from '../../Components/SearchLocation/type'
+import { kmToMiles } from '../../../../Utils/kmtoMiles'
 
 const UserMappingView = () => {
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>()
@@ -247,7 +248,7 @@ const UserMappingView = () => {
                   <MaterialCommunityIcons name='map-marker-distance' size={18} color='#4CAF50' />
                   <Text style={styles.routeLabel}>Distance</Text>
                 </View>
-                <Text style={styles.routeValue}>{routeData.distance?.toFixed(1)} km</Text>
+                <Text style={styles.routeValue}>{kmToMiles(routeData.distance)} mi</Text>
               </View>
               <View style={[styles.routeRow, { marginTop: 10 }]}>
                 <View style={styles.routeLeft}>

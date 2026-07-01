@@ -1,0 +1,1 @@
+export const kmToMiles = (km?: number) => (km != null ? (km * 0.621371).toFixed(1) : '0.0');
