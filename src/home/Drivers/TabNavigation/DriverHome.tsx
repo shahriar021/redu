@@ -173,6 +173,7 @@ const DriverHome = () => {
     const [selectedRadius, setSelectedRadius] = useState<number>(20)
     const [jobs, setJobs] = useState<JobCardData[]>([])
     const [isStartingJob, setIsStartingJob] = useState(false)
+    const [isTogglingStatus, setIsTogglingStatus] = useState(false)
 
     // ── Loading states ────────────────────────────────────────────────────────
     // isFirstLoad → skeleton দেখায় (page first open)
@@ -186,6 +187,19 @@ const DriverHome = () => {
     // Keep refs in sync so callbacks can read latest values without causing re-renders
     useEffect(() => { isOnlineRef.current = isOnline }, [isOnline])
     useEffect(() => { locationCoordsRef.current = locationCoords }, [locationCoords])
+
+    const handleToggleOnline = async () => {
+        const next = !isOnline
+        setIsTogglingStatus(true)
+        try {
+            await updateDriverStatus(next ? 'active' : 'inactive')
+            setIsOnline(next)
+        } catch {
+            // updateDriverStatus already shows a toast + handles rollback
+        } finally {
+            setIsTogglingStatus(false)
+        }
+    }
 
     // ─── Load vUser ───────────────────────────────────────────────────────────
 
@@ -576,6 +590,10 @@ const DriverHome = () => {
     // ─── Handlers ─────────────────────────────────────────────────────────────
 
     const handleJobPress = async (job: JobCardData) => {
+        if (isTogglingStatus) {
+            toast.show({ message: 'Please wait, updating status...', type: 'error', style: 'top' })
+            return
+        }
         try {
             setIsStartingJob(true)
 
@@ -597,6 +615,7 @@ const DriverHome = () => {
                     timeout: 15000,
                 }
             )
+            console.log('ACCEPT RESPONSE:', JSON.stringify(response.data))
 
             if (response.data?.success === true) {
                 navigation.navigate('JobAssigned', { jobId: job.id })
@@ -692,7 +711,8 @@ const DriverHome = () => {
                         )}
                     </View>
                     <TouchableOpacity
-                        onPress={() => setIsOnline((prev) => !prev)}
+                        onPress={handleToggleOnline}
+                        disabled={isTogglingStatus}
                         className={`w-16 h-10 rounded-full flex-row items-center px-1 ${isOnline ? 'bg-green-500' : 'bg-gray-300'}`}
                     >
                         <Animated.View className={`w-8 h-8 rounded-full bg-white ${isOnline ? 'ml-auto' : ''}`} />
