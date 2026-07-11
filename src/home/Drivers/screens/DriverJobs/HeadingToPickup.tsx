@@ -299,6 +299,7 @@ const HeadingToPickup = () => {
     }, [fetchJobDetails, jobId]);
 
     const advanceJobStatus = async (label: string) => {
+    try {
         const token = await AsyncStorage.getItem('vToken');
         if (!token) throw new Error('Not authenticated');
         const res = await axios.patch(
@@ -306,8 +307,13 @@ const HeadingToPickup = () => {
             {},
             { headers: { Authorization: `Bearer ${token}` }, timeout: 15000 }
         );
+        console.log('ADVANCE STATUS RESPONSE:', JSON.stringify(res.data))
         if (!res.data?.success) throw new Error(res.data?.message || `Failed to ${label}`);
-    };
+    } catch (err: any) {
+        console.error('ADVANCE STATUS ERROR:', err?.response?.data || err.message)
+        throw err  // re-throw so callers still get to handle it
+    }
+};
 
     const handleArrived = async () => {
         if (!isNearPickup) {

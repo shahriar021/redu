@@ -52,6 +52,11 @@ const UserFindingDrivers = () => {
   const [searchMessage, setSearchMessage] = useState('Finding nearby drivers...')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isCancelling, setIsCancelling] = useState(false)
+  const searchStatusRef = useRef<SearchStatus>('searching')
+
+  useEffect(() => {
+  searchStatusRef.current = searchStatus
+}, [searchStatus])
 
   useEffect(() => {
     Animated.loop(
@@ -80,7 +85,11 @@ const UserFindingDrivers = () => {
     }
 
     const handleJobStatusUpdate = async (data: JobStatusUpdateData) => {
-      if (data.jobId !== activeJobId) return
+      console.log('📩 Received job status update:', JSON.stringify(data))
+  if (data.jobId !== activeJobId) {
+    console.log('⚠️ jobId mismatch — ignoring. Expected:', activeJobId, 'Got:', data.jobId)
+    return
+  }
 
       switch (data.status) {
         case 'BOOKED': {
@@ -143,23 +152,27 @@ const UserFindingDrivers = () => {
     }
 
     const setup = async () => {
-      try {
-        await socketService.connect()
-        socketService.onJobStatusUpdate(handleJobStatusUpdate)
+  try {
+    console.log('🔌 Attempting socket connect...')
+    await socketService.connect()
+    console.log('✅ Socket connected successfully')
+    socketService.onJobStatusUpdate(handleJobStatusUpdate)
 
-        const timeout = setTimeout(() => {
-          if (searchStatus === 'searching') {
-            setSearchStatus('error')
-            setErrorMessage('No drivers available at the moment. Please try again.')
-          }
-        }, 60000)
+   const timeout = setTimeout(() => {
+if (searchStatusRef.current === 'searching') {
+  console.log('⏰ 60s timeout fired — no BOOKED event received. Current status was:', searchStatusRef.current)
+  setSearchStatus('error')
+  setErrorMessage('No drivers available at the moment. Please try again.')
+}
+}, 60000)
 
-        return () => clearTimeout(timeout)
-      } catch {
-        setSearchStatus('error')
-        setErrorMessage('Failed to connect to driver service')
-      }
-    }
+    return () => clearTimeout(timeout)
+  } catch (err: any) {
+    console.log('❌ Socket setup failed:', err?.message || err)
+    setSearchStatus('error')
+    setErrorMessage('Failed to connect to driver service')
+  }
+}
 
     const cleanup = setup()
     return () => {
@@ -255,6 +268,8 @@ const UserFindingDrivers = () => {
         </View>
       )
     }
+
+    
 
     return (
       <>

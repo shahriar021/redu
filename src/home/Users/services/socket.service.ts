@@ -72,6 +72,10 @@ class SocketService {
       reconnectionDelayMax: 5000,
     })
 
+    this.socket.onAny((eventName, ...args) => {
+  console.log('📡 ANY EVENT RECEIVED:', eventName, JSON.stringify(args))
+})
+
     this.socket.on('connect', () => {
       this.isConnected = true
     })
@@ -86,12 +90,17 @@ class SocketService {
   }
 
   onJobStatusUpdate(callback: (data: JobStatusUpdateData) => void) {
-    this.socket?.on('job:status-update', callback)
-  }
+  console.log('👂 Registering listener for job:status-update')
+  this.socket?.on('job:status-update', (data: JobStatusUpdateData) => {
+    console.log('🎯 job:status-update EVENT FIRED:', JSON.stringify(data))
+    callback(data)
+  })
+}
 
-  offJobStatusUpdate(callback: (data: JobStatusUpdateData) => void) {
-    this.socket?.off('job:status-update', callback)
-  }
+offJobStatusUpdate(callback: (data: JobStatusUpdateData) => void) {
+  console.log('🔇 Removing listener for job:status-update')
+  this.socket?.off('job:status-update', callback)
+}
 
   onDriverLocation(callback: (data: DriverLocationData) => void) {
     this.socket?.on('driver:location', callback)
@@ -102,12 +111,17 @@ class SocketService {
   }
 
   onNotification(callback: (data: NotificationData) => void) {
-    this.socket?.on('notification', callback)
-  }
+  console.log('👂 Registering listener for notification')
+  this.socket?.on('notification', (data: NotificationData) => {
+    console.log('🔔 notification EVENT FIRED:', JSON.stringify(data))
+    callback(data)
+  })
+}
 
-  offNotification(callback: (data: NotificationData) => void) {
-    this.socket?.off('notification', callback)
-  }
+offNotification(callback: (data: NotificationData) => void) {
+  console.log('🔇 Removing listener for notification')
+  this.socket?.off('notification', callback)
+}
 
   onJobNew(callback: (data: JobNewData) => void) {
     this.socket?.on('job:new', callback)

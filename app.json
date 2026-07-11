@@ -25,8 +25,10 @@
         "NSCalendarsUsageDescription": "We need calendar access to schedule jobs.",
         "NSRemindersUsageDescription": "We need reminders access to set job notifications.",
         "NSMotionUsageDescription": "We use motion data to track your activity during deliveries.",
-        "ITSAppUsesNonExemptEncryption": false
-      }
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIViewControllerBasedStatusBarAppearance": false
+      },
+      "appleTeamId": "99ZXFR9ZMW"
     },
     "android": {
       "adaptiveIcon": {
