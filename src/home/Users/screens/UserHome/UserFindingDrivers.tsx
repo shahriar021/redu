@@ -55,8 +55,8 @@ const UserFindingDrivers = () => {
   const searchStatusRef = useRef<SearchStatus>('searching')
 
   useEffect(() => {
-  searchStatusRef.current = searchStatus
-}, [searchStatus])
+    searchStatusRef.current = searchStatus
+  }, [searchStatus])
 
   useEffect(() => {
     Animated.loop(
@@ -86,10 +86,10 @@ const UserFindingDrivers = () => {
 
     const handleJobStatusUpdate = async (data: JobStatusUpdateData) => {
       console.log('📩 Received job status update:', JSON.stringify(data))
-  if (data.jobId !== activeJobId) {
-    console.log('⚠️ jobId mismatch — ignoring. Expected:', activeJobId, 'Got:', data.jobId)
-    return
-  }
+      if (data.jobId !== activeJobId) {
+        console.log('⚠️ jobId mismatch — ignoring. Expected:', activeJobId, 'Got:', data.jobId)
+        return
+      }
 
       switch (data.status) {
         case 'BOOKED': {
@@ -103,7 +103,7 @@ const UserFindingDrivers = () => {
             })
             const job = res.data?.data
             setTimeout(() => {
-              ;(navigation as any).navigate('UserLiveTracking', {
+              ; (navigation as any).navigate('UserLiveTracking', {
                 pickup,
                 dropoff,
                 routeData,
@@ -115,21 +115,21 @@ const UserFindingDrivers = () => {
                 jobId: activeJobId,
                 driver: job?.driver
                   ? {
-                      id: job.driver.id,
-                      name: job.driver.user?.fullName ?? 'Driver',
-                      rating: null,
-                      vehicle: job.driver.truckType?.name ?? '',
-                      plate: job.driver.numberPlate ?? '',
-                      phone: job.driver.user?.mobileNumber ?? '',
-                      image: job.driver.user?.avatar ?? null,
-                    }
+                    id: job.driver.id,
+                    name: job.driver.user?.fullName ?? 'Driver',
+                    rating: null,
+                    vehicle: job.driver.truckType?.name ?? '',
+                    plate: job.driver.numberPlate ?? '',
+                    phone: job.driver.user?.mobileNumber ?? '',
+                    image: job.driver.user?.avatar ?? null,
+                  }
                   : null,
               })
             }, 1500)
           } catch {
             // navigate without driver detail rather than blocking
             setTimeout(() => {
-              ;(navigation as any).navigate('UserLiveTracking', {
+              ; (navigation as any).navigate('UserLiveTracking', {
                 pickup,
                 dropoff,
                 routeData,
@@ -152,27 +152,27 @@ const UserFindingDrivers = () => {
     }
 
     const setup = async () => {
-  try {
-    console.log('🔌 Attempting socket connect...')
-    await socketService.connect()
-    console.log('✅ Socket connected successfully')
-    socketService.onJobStatusUpdate(handleJobStatusUpdate)
+      try {
+        console.log('🔌 Attempting socket connect...')
+        await socketService.connect()
+        console.log('✅ Socket connected successfully')
+        socketService.onJobStatusUpdate(handleJobStatusUpdate)
 
-   const timeout = setTimeout(() => {
-if (searchStatusRef.current === 'searching') {
-  console.log('⏰ 60s timeout fired — no BOOKED event received. Current status was:', searchStatusRef.current)
-  setSearchStatus('error')
-  setErrorMessage('No drivers available at the moment. Please try again.')
-}
-}, 60000)
+        const timeout = setTimeout(() => {
+          if (searchStatusRef.current === 'searching') {
+            console.log('⏰ 60s timeout fired — no BOOKED event received. Current status was:', searchStatusRef.current)
+            setSearchStatus('error')
+            setErrorMessage('No drivers available at the moment. Please try again.')
+          }
+        }, 60000)
 
-    return () => clearTimeout(timeout)
-  } catch (err: any) {
-    console.log('❌ Socket setup failed:', err?.message || err)
-    setSearchStatus('error')
-    setErrorMessage('Failed to connect to driver service')
-  }
-}
+        return () => clearTimeout(timeout)
+      } catch (err: any) {
+        console.log('❌ Socket setup failed:', err?.message || err)
+        setSearchStatus('error')
+        setErrorMessage('Failed to connect to driver service')
+      }
+    }
 
     const cleanup = setup()
     return () => {
@@ -181,6 +181,33 @@ if (searchStatusRef.current === 'searching') {
     }
   }, [activeJobId])
 
+  // ---------------------
+  // Add near your other useState declarations:
+  const [debugResponse, setDebugResponse] = useState<string | null>(null)
+  const [debugLoading, setDebugLoading] = useState(false)
+
+  // Add this function anywhere in the component:
+  const callStatusApi = async () => {
+    try {
+      setDebugLoading(true)
+      const token = await AsyncStorage.getItem('vToken')
+      const res = await axios.patch(
+        `${IPA_BASE}/jobs/${activeJobId}/status`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          timeout: 10000,
+        }
+      )
+      console.log('🔍 DEBUG - /status response:', JSON.stringify(res.data))
+      setDebugResponse(JSON.stringify(res.data, null, 2))
+    } catch (err: any) {
+      console.log('🔍 DEBUG - /status error:', JSON.stringify(err?.response?.data || err.message))
+      setDebugResponse('ERROR: ' + JSON.stringify(err?.response?.data || err.message))
+    } finally {
+      setDebugLoading(false)
+    }
+  }
   const handleCancelSearch = async () => {
     Alert.alert('Cancel Search', 'Are you sure you want to cancel your job request?', [
       { text: 'No', style: 'cancel' },
@@ -228,11 +255,11 @@ if (searchStatusRef.current === 'searching') {
     routeData?.points?.length > 1
       ? routeData.points
       : pickup && dropoff
-      ? [
+        ? [
           { latitude: pickup.latitude, longitude: pickup.longitude },
           { latitude: dropoff.latitude, longitude: dropoff.longitude },
         ]
-      : []
+        : []
 
   const renderContent = () => {
     if (searchStatus === 'error') {
@@ -269,7 +296,7 @@ if (searchStatusRef.current === 'searching') {
       )
     }
 
-    
+
 
     return (
       <>
@@ -371,6 +398,22 @@ if (searchStatusRef.current === 'searching') {
           <View className='w-7' />
         </View>
       </View>
+
+      <TouchableOpacity
+        onPress={callStatusApi}
+        disabled={debugLoading}
+        style={{ marginTop: 16, padding: 10, backgroundColor: '#eee', borderRadius: 8 }}
+      >
+        <Text style={{ textAlign: 'center' }}>
+          {debugLoading ? 'Calling...' : 'DEBUG: Call /status API'}
+        </Text>
+      </TouchableOpacity>
+
+      {debugResponse && (
+        <Text style={{ marginTop: 8, textAlign: 'center', color: '#333', fontSize: 12 }}>
+          {debugResponse}
+        </Text>
+      )}
 
       <Animated.View
         style={[{ height: height * 0.45 }, { transform: [{ translateY: pan.y }] }]}
